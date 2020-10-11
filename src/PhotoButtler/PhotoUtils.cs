@@ -16,7 +16,10 @@ namespace PhotoButtler
 
             if (dateTimeString != null)
             {
-                dateTime = DateTime.ParseExact(dateTimeString, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture);
+                if (DateTime.TryParseExact(dateTimeString, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out var tmpDateTime))
+                {
+                    dateTime = tmpDateTime;
+                }
             }
             
             return dateTime;
