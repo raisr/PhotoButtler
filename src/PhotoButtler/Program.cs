@@ -1,5 +1,4 @@
-﻿using MetadataExtractor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace PhotoButtler
@@ -20,7 +19,7 @@ namespace PhotoButtler
                 var dateTimeTaken = PhotoUtils.GetDateTimeTaken(file);
                 if (dateTimeTaken != null)
                 {
-                    IOUtils.CopyFileToDateFolder(file, destinationFolder, dateTimeTaken.Value);
+                    IOUtils.MoveFileToDateFolder(file, destinationFolder, dateTimeTaken.Value);
                     filesWithTakenDateTime.Add(file);
                 }
                 else
