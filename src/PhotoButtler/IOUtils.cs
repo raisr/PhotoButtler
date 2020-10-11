@@ -33,7 +33,7 @@ namespace PhotoButtler
             return paths;
         }
 
-        public static void CopyFileToDateFolder(string sourceFile, string destinationRootFolder, DateTime dateTimeTaken)
+        public static void MoveFileToDateFolder(string sourceFile, string destinationRootFolder, DateTime dateTimeTaken)
         {
             var dateTimeFolder = @$"{dateTimeTaken.Year:D4}\{dateTimeTaken.Month:D2}\{dateTimeTaken.Day:D2}";
             var destinationFile = Path.Combine(destinationRootFolder, dateTimeFolder, Path.GetFileName(sourceFile));
@@ -44,22 +44,32 @@ namespace PhotoButtler
                 Directory.CreateDirectory(destinationPath);
             }
 
-            var retry = true;
+            var retry = false;
 
-            while (retry)
+            do
             {
                 try
                 {
-                    File.Copy(sourceFile, destinationFile);
+                    File.Move(sourceFile, destinationFile);
                     retry = false;
                 }
-                catch (Exception e)
+                catch (IOException e)
                 {
-                    if (e.Message.Contains("exists"))
+                    if (File.Exists(destinationFile))
                     {
                         destinationFile = GetNextFilenameVersion(destinationFile);
+                        retry = true;
+                        continue;
                     }
+
+                    throw;
                 }
+            } while (retry);
+
+            var sourceFolder = Path.GetDirectoryName(sourceFile);
+            if (!Directory.EnumerateFileSystemEntries(sourceFolder).Any())
+            {
+                Directory.Delete(sourceFolder);
             }
         }
 
